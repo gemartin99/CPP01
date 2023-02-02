@@ -28,10 +28,10 @@ std::string replace_str(std::string text, std::string s1, std::string s2, std::s
 	std::ofstream outfile;
 	std::fstream writefile;
 	std::string	result;
+	std::string	extra;
 	int end;
 
 	outfile.open(fd + ".replace");
-	//writefile.open(fd + ".replace", std::fstream::out);
 	if (!outfile.is_open())
 	{
 		std::cout << "Failed to open the file" << std::endl;
@@ -40,16 +40,17 @@ std::string replace_str(std::string text, std::string s1, std::string s2, std::s
 	std::size_t found = text.find(s1);
 	while (found != std::string::npos)
 	{
+		extra = text.substr(found + s1.length(), text.length() - found - s1.length());
 		result = text.substr(0, found);
 		result = result + s2;
 		end = found + s1.length();
+		outfile << result;
 		result = result + text.substr(end, text.length() - found);
-		outfile << result << std::endl;
-		outfile.close();
-		text = text.substr(found, text.length() - found);
+		text = text.substr(found + s1.length(), text.length() - found + s2.length());
 		found = text.find(s1);
-		//text = replace_str(text, s1, s2, fd);
 	}
+	outfile << extra;
+	outfile.close();
 	return (text);
 }
 
