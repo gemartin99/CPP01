@@ -5,19 +5,24 @@
 std::string ft_read(char *fd)
 {
 	std::ifstream File;
-	std::string res = "";
+	std::string res;
+	std::string line;
 
 	File.open(fd);
-	if (File.is_open()) 
-	{
-		std::string line;
-		while (getline(File, line))
-			res = res + line;
-	}
-	else
+	if (!File.is_open()) 
 	{
 		std::cout << "No se puede abrir el fichero" << std::endl;
 		exit (1);
+	}
+	else
+	{
+		while (!File.eof())
+		{
+			std::getline(File, line);
+			res = res + line;
+			if (!File.eof())
+				res += '\n';
+		}
 	}
 	File.close();
 	return (res);
@@ -26,10 +31,6 @@ std::string ft_read(char *fd)
 std::string replace_str(std::string text, std::string s1, std::string s2, std::string fd)
 {
 	std::ofstream outfile;
-	std::fstream writefile;
-	std::string	result;
-	std::string	extra;
-	int end;
 
 	outfile.open(fd + ".replace");
 	if (!outfile.is_open())
@@ -40,16 +41,11 @@ std::string replace_str(std::string text, std::string s1, std::string s2, std::s
 	std::size_t found = text.find(s1);
 	while (found != std::string::npos)
 	{
-		extra = text.substr(found + s1.length(), text.length() - found - s1.length());
-		result = text.substr(0, found);
-		result = result + s2;
-		end = found + s1.length();
-		outfile << result;
-		result = result + text.substr(end, text.length() - found);
-		text = text.substr(found + s1.length(), text.length() - found + s2.length());
-		found = text.find(s1);
+		text.erase(found, s1.length());
+		text.insert(found, s2);
+		found = text.find(s1, found + s2.length());
 	}
-	outfile << extra;
+	outfile << text;
 	outfile.close();
 	return (text);
 }

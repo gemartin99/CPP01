@@ -7,10 +7,16 @@ void HumanB::setWeapon(Weapon &newweapon)
 
 void HumanB::attack()
 {
-	std::cout << name << " attacks with their " << weapon->getType() << std::endl;
+	if (!this->weapon)
+	{
+		std::cout << name << " has no weapon" << std::endl;
+	}
+	else
+		std::cout << name << " attacks with their " << weapon->getType() << std::endl;
 }
 
 HumanB::HumanB (std::string name): name(name)
 {
+	this->weapon = nullptr;
 }
 
